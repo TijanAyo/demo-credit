@@ -9,7 +9,12 @@
     "build": "tsc",
     "start": "npm run build && node ./dist/server.js",
     "start:dev": "nodemon ./src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "knex": "./node_modules/.bin/knex",
+    "knex:migrate": "knex --knexfile ./src/db/knexfile.ts migrate:make _ -x ts",
+    "knex:push": "dotenv -e .env -- knex --knexfile ./src/db/knexfile.ts migrate:latest",
+    "knex:push:prod": "knex --knexfile ./src/db/knexfile.ts migrate:latest --env production",
+    "knex:rollback": "knex --knexfile ./src/db/knexfile.ts migrate:rollback"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -27,8 +32,10 @@
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/supertest": "^6.0.2",
+    "dotenv-cli": "^7.4.2",
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0",
