@@ -15,7 +15,7 @@ export class UserRepository {
 
   async createUser(data: IcreateUser) {
     try {
-      return await KNEX("users").insert({
+      await KNEX("users").insert({
         first_name: data.first_name,
         last_name: data.last_name,
         email_address: data.email_address,
@@ -23,6 +23,8 @@ export class UserRepository {
         password: data.password,
         phone_number: data.phone_number,
       });
+
+      return { success: true };
     } catch (err: any) {
       console.error("createUserError", err);
       throw err;

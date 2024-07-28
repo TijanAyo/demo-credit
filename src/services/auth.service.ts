@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { UserRepository } from "../repository";
+import { UserRepository, WalletRepository } from "../repository";
 import { registerSchema, loginSchema } from "../validations";
 import { IcreateUser, signInPayload } from "../interfaces";
 import {
@@ -7,12 +7,20 @@ import {
   validationException,
 } from "../common/constants/exception";
 import { ZodError } from "zod";
-import { compareHash, generateAccessToken, hashPayload } from "../utils";
+import {
+  compareHash,
+  generateAccessToken,
+  generateAccountNumber,
+  hashPayload,
+} from "../utils";
 import { AppResponse } from "../helper";
 
 @injectable()
 export class AuthService {
-  constructor(private readonly _userRepository: UserRepository) {}
+  constructor(
+    private readonly _userRepository: UserRepository,
+    private readonly _walletRepository: WalletRepository
+  ) {}
 
   public async register(payload: IcreateUser) {
     try {
@@ -32,24 +40,39 @@ export class AuthService {
         );
       }
 
-      const hashedPassword = await hashPayload(password);
-      const hashedBVN = await hashPayload(bvn);
-      const data = {
+      const [hashedPassword, hashedBVN] = await Promise.all([
+        hashPayload(password),
+        hashPayload(bvn),
+      ]);
+
+      // Create new user
+      const newUser = await this._userRepository.createUser({
         first_name,
         last_name,
         email_address,
         password: hashedPassword,
         bvn: hashedBVN,
         phone_number,
+      });
+
+      if (!newUser.success) {
+        throw new badRequestException(
+          "An unexpected error has occurred while creating account"
+        );
+      }
+
+      const createdUser = await this._userRepository.findByEmail(email_address);
+      const walletData = {
+        account_number: await generateAccountNumber(),
+        user_id: createdUser.id,
       };
-
-      const newUser = await this._userRepository.createUser(data);
-
-      // Also create wallet for user
-
-      if (!newUser) {
-        console.log("Error creating users");
-        throw new badRequestException("An unexpected error has occurred");
+      // Create wallet for newly registered user
+      const newWallet = await this._walletRepository.createWallet(walletData);
+      if (!newWallet.success) {
+        console.log("Error creating wallet for new user");
+        throw new badRequestException(
+          "An unexpected error has occurred while creating account"
+        );
       }
 
       return AppResponse(null, "Account created successfully", true);

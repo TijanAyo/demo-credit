@@ -25,3 +25,8 @@ export interface Iuser {
   is_settlement_account_set: boolean;
   is_transaction_pin_set: boolean;
 }
+
+export interface IcreateWallet {
+  account_number: string;
+  user_id: number;
+}

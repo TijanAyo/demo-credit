@@ -4,7 +4,7 @@ import * as dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 
-import { authRoute } from "./routes";
+import { authRoute, walletRoute } from "./routes";
 
 dotenv.config();
 
@@ -17,6 +17,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Define Routes
 app.use("/api/auth", authRoute);
+app.use("/api/wallet", walletRoute);
 
 app.get("/", (_req: Request, res: Response) => {
   return res

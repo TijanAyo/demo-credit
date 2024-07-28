@@ -11,10 +11,10 @@
     "start:dev": "nodemon ./src/server.ts",
     "test": "jest",
     "knex": "./node_modules/.bin/knex",
-    "knex:migrate": "knex --knexfile ./src/db/knexfile.ts migrate:make _ -x ts",
+    "knex:migrate": "dotenv -e .env -- knex --knexfile ./src/db/knexfile.ts migrate:make _ -x ts",
     "knex:push": "dotenv -e .env -- knex --knexfile ./src/db/knexfile.ts migrate:latest",
-    "knex:push:prod": "knex --knexfile ./src/db/knexfile.ts migrate:latest --env production",
-    "knex:rollback": "knex --knexfile ./src/db/knexfile.ts migrate:rollback"
+    "knex:push:prod": "dotenv -e .env -- knex --knexfile ./src/db/knexfile.ts migrate:latest --env production",
+    "knex:rollback": "dotenv -e .env -- knex --knexfile ./src/db/knexfile.ts migrate:rollback"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
