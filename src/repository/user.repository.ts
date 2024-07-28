@@ -6,7 +6,8 @@ import { IcreateUser } from "../interfaces";
 export class UserRepository {
   async findByEmail(email: string) {
     try {
-      return await KNEX("users").where("email_address", email).first();
+      const user = await KNEX("users").where("email_address", email).first();
+      return user;
     } catch (err: any) {
       console.log("findByEmailError:", err);
       throw err;

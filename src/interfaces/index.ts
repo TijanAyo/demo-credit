@@ -30,3 +30,15 @@ export interface IcreateWallet {
   account_number: string;
   user_id: number;
 }
+
+export interface transferPayload {
+  account_number: string;
+  amount: number;
+  transaction_pin: string;
+}
+
+export interface makeTransferPayload {
+  senderId: number;
+  receiverId: number;
+  amount: number;
+}
