@@ -25,6 +25,8 @@ export class WalletService {
       const receiver = await this._walletRepository.findByAccountNumber(
         account_number
       );
+
+      console.log("receiver:", receiver);
       if (!receiver) {
         throw new badRequestException(
           "Could not retrieve user associated with account number"
@@ -33,7 +35,7 @@ export class WalletService {
 
       const makeTransfer = await this._walletRepository.makeTransfer({
         senderId: userId,
-        receiverId: receiver.id,
+        receiverId: receiver.user_id,
         amount,
       });
 
