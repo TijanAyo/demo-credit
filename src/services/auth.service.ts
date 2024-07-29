@@ -78,7 +78,6 @@ export class AuthService {
 
       return AppResponse(null, "Account created successfully", true);
     } catch (err: any) {
-      console.log("registerError", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
@@ -106,7 +105,6 @@ export class AuthService {
 
       return AppResponse(token, "Authorization successful", true);
     } catch (err: any) {
-      console.log("loginError", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
