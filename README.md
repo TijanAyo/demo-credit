@@ -56,7 +56,7 @@ This project is an MVP (Minimum Viable Product) for a wallet service in a mobile
 
 ## ER-Diagram
 
-You can view the ER Diagram for the database schema [here]().
+[View on Eraser![](https://app.eraser.io/workspace/ZEy67ITx5reS1Pgp1iSJ/preview?elements=IkxkOG4uN95akODrmTUp3g&type=embed)](https://app.eraser.io/workspace/ZEy67ITx5reS1Pgp1iSJ?elements=IkxkOG4uN95akODrmTUp3g)
 
 ## Documentation
 
