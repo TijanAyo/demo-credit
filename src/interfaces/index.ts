@@ -67,3 +67,17 @@ export interface fundWalletPayload {
   account_number: string;
   amount: number;
 }
+
+export interface IcreateTransaction {
+  amount: string;
+  description: string;
+  wallet_id: number;
+}
+
+export interface walletResponse {
+  id: number;
+  account_number: string;
+  account_bank: string;
+  balance: number;
+  user_id: number;
+}

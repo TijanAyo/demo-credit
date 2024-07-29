@@ -1,5 +1,9 @@
 import { injectable } from "tsyringe";
-import { WalletRepository, UserRepository } from "../repository";
+import {
+  WalletRepository,
+  UserRepository,
+  TransactionRepository,
+} from "../repository";
 import {
   setPinPayload,
   setAccountPayload,
@@ -23,7 +27,8 @@ import { hashPayload } from "../utils";
 export class WalletService {
   constructor(
     private readonly _walletRepository: WalletRepository,
-    private readonly _userRepository: UserRepository
+    private readonly _userRepository: UserRepository,
+    private readonly _transactionRepository: TransactionRepository
   ) {}
 
   public async fundWallet(userId: number, payload: fundWalletPayload) {
@@ -52,6 +57,12 @@ export class WalletService {
         );
       }
 
+      await this._transactionRepository.createTransaction({
+        amount: String(amount),
+        description: "Funding",
+        wallet_id: account.id,
+      });
+
       return AppResponse(null, "Wallet credited successfully", true);
     } catch (err: any) {
       if (err instanceof ZodError) {
@@ -67,9 +78,10 @@ export class WalletService {
         payload
       );
 
-      const receiver = await this._walletRepository.findByAccountNumber(
-        account_number
-      );
+      const [receiver, account] = await Promise.all([
+        this._walletRepository.findByAccountNumber(account_number),
+        this._walletRepository.findByWalletId(userId),
+      ]);
 
       if (!receiver) {
         throw new badRequestException(
@@ -89,6 +101,12 @@ export class WalletService {
         );
       }
 
+      await this._transactionRepository.createTransaction({
+        amount: String(amount),
+        description: "Transfer",
+        wallet_id: account.id,
+      });
+
       return AppResponse(null, "Transfer successful", true);
     } catch (err: any) {
       if (err instanceof ZodError) {
@@ -102,16 +120,25 @@ export class WalletService {
     try {
       const { amount } = await withdrawSchema.parseAsync(payload);
 
-      const makeWithdrawal = await this._walletRepository.makeWithdrawal({
-        senderId: userId,
-        amount,
-      });
+      const [makeWithdrawal, account] = await Promise.all([
+        this._walletRepository.makeWithdrawal({
+          senderId: userId,
+          amount,
+        }),
+        this._walletRepository.findByWalletId(userId),
+      ]);
 
       if (!makeWithdrawal.success) {
         throw new badRequestException(
           "An unexpected error has occurred, kindly try again in a few minute"
         );
       }
+
+      await this._transactionRepository.createTransaction({
+        amount: String(amount),
+        description: "Withdraw",
+        wallet_id: account.id,
+      });
 
       return AppResponse(
         null,

@@ -1,10 +1,10 @@
 import { injectable } from "tsyringe";
 import { KNEX } from "../db";
 import {
-  fundWalletPayload,
   IcreateWallet,
   makeTransferPayload,
   makeWithdrawalPayload,
+  walletResponse,
 } from "../interfaces";
 
 @injectable()
@@ -29,6 +29,15 @@ export class WalletRepository {
       return await KNEX("wallets")
         .where("account_number", account_number)
         .first();
+    } catch (err: any) {
+      console.log("findByAccountNumberError:", err);
+      throw err;
+    }
+  }
+
+  async findByWalletId(userId: number): Promise<walletResponse> {
+    try {
+      return await KNEX("wallets").where("user_id", userId).first();
     } catch (err: any) {
       console.log("findByAccountNumberError:", err);
       throw err;
