@@ -8,7 +8,6 @@ This project is an MVP (Minimum Viable Product) for a wallet service in a mobile
 - Fund their account
 - Transfer funds to another user's account
 - Withdraw funds from their account
-- Ensure users in the Lendsqr Adjutor Karma blacklist are not onboarded
 
 ## Tech Stack
 
@@ -36,6 +35,7 @@ This project is an MVP (Minimum Viable Product) for a wallet service in a mobile
    ```
 
 3. **Configure the database**
+
    Ensure you have a MySQL database running. Update the `.env` file with your database credentials. Use `.env.example` as a reference for the required environment variables.
 
    Run the migrations to set up the database schema:
