@@ -12,6 +12,12 @@ router.post(
   walletController.setTransactionPin.bind(walletController)
 );
 
+router.post(
+  "/set-account",
+  Authorize,
+  walletController.setSettlementAccount.bind(walletController)
+);
+
 router.post("/fund-wallet", walletController.fundWallet.bind(walletController));
 
 router.post(
@@ -21,6 +27,11 @@ router.post(
   walletController.transfer.bind(walletController)
 );
 
-router.post("/withdraw", walletController.withdraw.bind(walletController));
+router.post(
+  "/withdraw",
+  Authorize,
+  validateTransaction,
+  walletController.withdraw.bind(walletController)
+);
 
 export { router as walletRoute };

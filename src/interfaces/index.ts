@@ -47,3 +47,18 @@ export interface setPinPayload {
   pin: string;
   confirm_pin: string;
 }
+
+export interface setAccountPayload {
+  account_number: string;
+  account_name: string;
+}
+
+export interface withdrawPayload {
+  amount: number;
+  transaction_pin: string;
+}
+
+export interface makeWithdrawalPayload {
+  senderId: number;
+  amount: number;
+}

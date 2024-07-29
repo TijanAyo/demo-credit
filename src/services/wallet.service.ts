@@ -1,9 +1,19 @@
 import { injectable } from "tsyringe";
 import { WalletRepository, UserRepository } from "../repository";
-import { setPinPayload, transferPayload } from "../interfaces";
+import {
+  setPinPayload,
+  setAccountPayload,
+  transferPayload,
+  withdrawPayload,
+} from "../interfaces";
 import { badRequestException, validationException } from "../common/constants";
 import { ZodError } from "zod";
-import { setTransactionPinSchema, transferSchema } from "../validations";
+import {
+  setSettlementAccountSchema,
+  setTransactionPinSchema,
+  transferSchema,
+  withdrawSchema,
+} from "../validations";
 import { AppResponse } from "../helper";
 import { hashPayload } from "../utils";
 
@@ -26,7 +36,6 @@ export class WalletService {
         account_number
       );
 
-      console.log("receiver:", receiver);
       if (!receiver) {
         throw new badRequestException(
           "Could not retrieve user associated with account number"
@@ -55,7 +64,33 @@ export class WalletService {
     }
   }
 
-  public async withdraw() {}
+  public async withdraw(userId: number, payload: withdrawPayload) {
+    try {
+      const { amount } = await withdrawSchema.parseAsync(payload);
+
+      const makeWithdrawal = await this._walletRepository.makeWithdrawal({
+        senderId: userId,
+        amount,
+      });
+
+      if (!makeWithdrawal.success) {
+        throw new badRequestException(
+          "An unexpected error has occurred, kindly try again in a few minute"
+        );
+      }
+
+      return AppResponse(
+        null,
+        "Withdrawal successful, deposit will be made into settlement account",
+        true
+      );
+    } catch (err: any) {
+      if (err instanceof ZodError) {
+        throw new validationException(err.errors[0].message);
+      }
+      throw err;
+    }
+  }
 
   public async setTransactionPin(userId: number, payload: setPinPayload) {
     try {
@@ -79,6 +114,35 @@ export class WalletService {
       return AppResponse(null, "Pin set successfully", true);
     } catch (err: any) {
       console.log("setTransactionPinError:", err);
+      if (err instanceof ZodError) {
+        throw new validationException(err.errors[0].message);
+      }
+      throw err;
+    }
+  }
+
+  public async setSettlementAccount(
+    userId: number,
+    payload: setAccountPayload
+  ) {
+    try {
+      const { account_number, account_name } =
+        await setSettlementAccountSchema.parseAsync(payload);
+
+      const setAccount = await this._userRepository.setSettlementAccount(
+        userId,
+        account_number,
+        account_name
+      );
+      if (!setAccount.success) {
+        throw new badRequestException(
+          "An unexpected error occured while updating account information"
+        );
+      }
+
+      return AppResponse(null, "Account successfully set", true);
+    } catch (err: any) {
+      console.log("withdrawError:", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }

@@ -44,4 +44,23 @@ export class UserRepository {
       throw err;
     }
   }
+
+  async setSettlementAccount(
+    userId: number,
+    account_number: string,
+    account_name: string
+  ) {
+    try {
+      await KNEX("users").where("id", userId).update({
+        settlement_account_number: account_number,
+        settlement_account_name: account_name,
+        is_settlement_account_set: true,
+      });
+
+      return { success: true };
+    } catch (err: any) {
+      console.log("setPinError", err);
+      throw err;
+    }
+  }
 }

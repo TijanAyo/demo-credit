@@ -1,6 +1,10 @@
 import { injectable } from "tsyringe";
 import { KNEX } from "../db";
-import { IcreateWallet, makeTransferPayload } from "../interfaces";
+import {
+  IcreateWallet,
+  makeTransferPayload,
+  makeWithdrawalPayload,
+} from "../interfaces";
 
 @injectable()
 export class WalletRepository {
@@ -48,6 +52,25 @@ export class WalletRepository {
       return { success: true };
     } catch (err: any) {
       console.log("makeTransferError:", err);
+      await trx.rollback();
+      throw err;
+    }
+  }
+
+  async makeWithdrawal(data: makeWithdrawalPayload) {
+    const trx = await KNEX.transaction();
+
+    try {
+      // Debit the sender
+      await trx("wallets")
+        .where("user_id", data.senderId)
+        .decrement("balance", data.amount);
+
+      await trx.commit();
+
+      return { success: true };
+    } catch (err: any) {
+      console.log("makeWithdrawalError:", err);
       await trx.rollback();
       throw err;
     }

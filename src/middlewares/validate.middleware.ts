@@ -20,6 +20,15 @@ export const validateTransaction = async (
       });
     }
 
+    if (!user.is_settlement_account_set) {
+      return res.status(400).json({
+        data: null,
+        message:
+          "Settlement account is missing, kindly provide an account before performing this action",
+        success: false,
+      });
+    }
+
     const walletInfo = await KNEX("wallets").where("user_id", user.id).first();
 
     if (walletInfo.balance < amount) {
