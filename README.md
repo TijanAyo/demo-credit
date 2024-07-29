@@ -16,7 +16,7 @@ This project is an MVP (Minimum Viable Product) for a wallet service in a mobile
 - TypeScript
 - Knex.js ORM
 - MySQL database
-- Jest and Supertest (for e2e testing)
+- Jest (for unit testing)
 
 ## Setup Instruction
 
@@ -60,4 +60,4 @@ You can view the ER Diagram for the database schema [here]().
 
 ## Documentation
 
-You can view the documentation for the project [here]().
+You can view the documentation for the project [here](https://documenter.getpostman.com/view/19118409/2sA3kaDKkU).
