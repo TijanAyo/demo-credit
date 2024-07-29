@@ -5,3 +5,8 @@ export const transferSchema = z.object({
   amount: z.number(),
   transaction_pin: z.string().max(4),
 });
+
+export const setTransactionPinSchema = z.object({
+  pin: z.string().trim(),
+  confirm_pin: z.string().trim(),
+});

@@ -42,3 +42,8 @@ export interface makeTransferPayload {
   receiverId: number;
   amount: number;
 }
+
+export interface setPinPayload {
+  pin: string;
+  confirm_pin: string;
+}

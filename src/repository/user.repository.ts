@@ -31,4 +31,17 @@ export class UserRepository {
       throw err;
     }
   }
+
+  async setPin(userId: number, pin: string) {
+    try {
+      await KNEX("users")
+        .where("id", userId)
+        .update({ transaction_pin: pin, is_transaction_pin_set: true });
+
+      return { success: true };
+    } catch (err: any) {
+      console.log("setPinError", err);
+      throw err;
+    }
+  }
 }
