@@ -5,10 +5,12 @@ import {
   setAccountPayload,
   transferPayload,
   withdrawPayload,
+  fundWalletPayload,
 } from "../interfaces";
 import { badRequestException, validationException } from "../common/constants";
 import { ZodError } from "zod";
 import {
+  fundWalletSchema,
   setSettlementAccountSchema,
   setTransactionPinSchema,
   transferSchema,
@@ -24,7 +26,41 @@ export class WalletService {
     private readonly _userRepository: UserRepository
   ) {}
 
-  public async fundWallet() {}
+  public async fundWallet(userId: number, payload: fundWalletPayload) {
+    try {
+      const { account_number, amount } = await fundWalletSchema.parseAsync(
+        payload
+      );
+
+      const account = await this._walletRepository.findByAccountNumber(
+        account_number
+      );
+
+      if (!account) {
+        throw new badRequestException(
+          "Could not retrieve user associated with account number"
+        );
+      }
+
+      const creditWallet = await this._walletRepository.fundWallet(
+        userId,
+        amount
+      );
+      if (!creditWallet.success) {
+        throw new badRequestException(
+          "An unexpected error occured while funding wallet"
+        );
+      }
+
+      return AppResponse(null, "Wallet credited successfully", true);
+    } catch (err: any) {
+      console.log("fundWalletError:", err);
+      if (err instanceof ZodError) {
+        throw new validationException(err.errors[0].message);
+      }
+      throw err;
+    }
+  }
 
   public async transfer(userId: number, payload: transferPayload) {
     try {

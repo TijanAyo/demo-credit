@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const transferSchema = z.object({
   account_number: z.string().trim(),
-  amount: z.number(),
+  amount: z.number().positive(),
   transaction_pin: z.string().max(4),
 });
 
@@ -17,6 +17,11 @@ export const setSettlementAccountSchema = z.object({
 });
 
 export const withdrawSchema = z.object({
-  amount: z.number(),
+  amount: z.number().positive(),
   transaction_pin: z.string().max(4),
+});
+
+export const fundWalletSchema = z.object({
+  account_number: z.string().trim().max(11),
+  amount: z.number().positive(),
 });

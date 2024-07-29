@@ -36,7 +36,15 @@ export class WalletController {
     }
   }
 
-  public async fundWallet(req: Request, res: Response) {}
+  public async fundWallet(req: Request, res: Response) {
+    const user = req.user;
+    try {
+      const response = await this._walletService.fundWallet(user.id, req.body);
+      return res.status(200).json(response);
+    } catch (err: any) {
+      return await this._errorHandler.handleCustomError(err, res);
+    }
+  }
 
   public async transfer(req: Request, res: Response) {
     const user = req.user;

@@ -62,3 +62,8 @@ export interface makeWithdrawalPayload {
   senderId: number;
   amount: number;
 }
+
+export interface fundWalletPayload {
+  account_number: string;
+  amount: number;
+}

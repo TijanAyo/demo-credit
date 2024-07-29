@@ -18,7 +18,11 @@ router.post(
   walletController.setSettlementAccount.bind(walletController)
 );
 
-router.post("/fund-wallet", walletController.fundWallet.bind(walletController));
+router.post(
+  "/fund-wallet",
+  Authorize,
+  walletController.fundWallet.bind(walletController)
+);
 
 router.post(
   "/transfer",

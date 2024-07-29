@@ -1,6 +1,7 @@
 import { injectable } from "tsyringe";
 import { KNEX } from "../db";
 import {
+  fundWalletPayload,
   IcreateWallet,
   makeTransferPayload,
   makeWithdrawalPayload,
@@ -30,6 +31,23 @@ export class WalletRepository {
         .first();
     } catch (err: any) {
       console.log("findByAccountNumberError:", err);
+      throw err;
+    }
+  }
+
+  async fundWallet(userId: number, amount: number) {
+    const trx = await KNEX.transaction();
+    try {
+      await trx("wallets")
+        .where("user_id", userId)
+        .increment("balance", amount);
+
+      await trx.commit();
+
+      return { success: true };
+    } catch (err: any) {
+      console.log("fundWalletError:", err);
+      await trx.rollback();
       throw err;
     }
   }
