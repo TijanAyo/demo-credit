@@ -62,8 +62,9 @@ export class AuthService {
       }
 
       const createdUser = await this._userRepository.findByEmail(email_address);
+
       const walletData = {
-        account_number: await generateAccountNumber(),
+        account_number: await this.generateUniqueAccountNumber(),
         user_id: createdUser.id,
       };
       // Create wallet for newly registered user
@@ -111,5 +112,19 @@ export class AuthService {
       }
       throw err;
     }
+  }
+
+  private async generateUniqueAccountNumber(): Promise<string> {
+    const accountNumber = await generateAccountNumber();
+
+    const accountNumberExist = await this._walletRepository.findByAccountNumber(
+      accountNumber
+    );
+
+    if (accountNumberExist) {
+      return this.generateUniqueAccountNumber();
+    }
+
+    return accountNumber;
   }
 }

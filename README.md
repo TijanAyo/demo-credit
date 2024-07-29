@@ -1,4 +1,4 @@
-# Demo Credit Wallet Service
+# Demo Credit
 
 ## Overview
 
