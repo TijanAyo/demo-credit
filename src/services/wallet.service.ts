@@ -54,7 +54,6 @@ export class WalletService {
 
       return AppResponse(null, "Wallet credited successfully", true);
     } catch (err: any) {
-      console.log("fundWalletError:", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
@@ -92,7 +91,6 @@ export class WalletService {
 
       return AppResponse(null, "Transfer successful", true);
     } catch (err: any) {
-      console.log("transferError:", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
@@ -149,7 +147,6 @@ export class WalletService {
 
       return AppResponse(null, "Pin set successfully", true);
     } catch (err: any) {
-      console.log("setTransactionPinError:", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
@@ -178,7 +175,6 @@ export class WalletService {
 
       return AppResponse(null, "Account successfully set", true);
     } catch (err: any) {
-      console.log("withdrawError:", err);
       if (err instanceof ZodError) {
         throw new validationException(err.errors[0].message);
       }
