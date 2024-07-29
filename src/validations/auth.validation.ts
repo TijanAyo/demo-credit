@@ -6,7 +6,7 @@ export const registerSchema = z.object({
   email_address: z.string().email().trim(),
   phone_number: z.string().trim().max(20),
   bvn: z.string().trim().max(20),
-  password: z.string().trim(),
+  password: z.string().trim().min(7).max(20),
 });
 
 export const loginSchema = z.object({
