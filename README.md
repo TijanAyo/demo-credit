@@ -61,3 +61,5 @@ This project is an MVP (Minimum Viable Product) for a wallet service in a mobile
 ## Documentation
 
 You can view the documentation for the project [here](https://documenter.getpostman.com/view/19118409/2sA3kaDKkU).
+
+**P.S.**: The server tends to sleep after 15 minutes of inactivity due to Render's hosting policy. To avoid longer response times, please hit the `/` endpoint to wake the server.
